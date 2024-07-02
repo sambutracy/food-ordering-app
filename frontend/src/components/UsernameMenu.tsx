@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { CircleUserRound } from "lucide-react";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
@@ -15,7 +15,16 @@ const UsernameMenu = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
             <DropdownMenuItem>
-              <Link to="/user-profile" className="font-bold hover-purple-500"
+              <Link
+                to="/manage-restaurant"
+                className="font-bold hover:text-orange-500"
+              >
+                Manage Restaurant
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link 
+                to="/user-profile" className="font-bold hover-purple-500"
               >
                  User Profile            
               </Link>

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/user";
+
 const createCurrentUser = async (req: Request, res: Response) => {
     //check if the user exits
     //create user if it doesnt exits
@@ -56,8 +57,8 @@ const getCurrentUser = async ( req: Request, res:Response) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({message: "something went wrong retry"});
-    }
-}
+    };
+};
 
 export default {
     createCurrentUser,
