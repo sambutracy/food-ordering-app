@@ -20,13 +20,13 @@ export const useCreateMyUser = () => {
                 Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(user),  
+            body: JSON.stringify(user),
         });
 
-        if (!response.ok){
+        if (!response.ok) {
             throw new Error("Failed to create user");
         }
-    };
+    }
 
     const { 
         mutateAsync: createUser,
@@ -37,5 +37,5 @@ export const useCreateMyUser = () => {
 
     return {
         createUser,
-    }
+    };
 };

@@ -24,7 +24,7 @@ const UsernameMenu = () => {
             <DropdownMenuItem>
                 <Button 
                   onClick={() => logout()}
-                  className="flex flex-1 font-bold bg-purple-500"
+                  className="flex flex-1 font-bold bg-purple-600"
                 >
                   Log Out
                 </Button>
