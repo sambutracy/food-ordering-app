@@ -6,8 +6,8 @@ const createCurrentUser = async (req: Request, res: Response) => {
     //create user if it doesnt exits
     //return the user object to the caling client
     try {
-        const { authOid } = req.body;
-        const existingUser = await User.findOne({ authOid })
+        const { auth0id } = req.body;
+        const existingUser = await User.findOne({ auth0id })
 
         if (existingUser) {
             return res.status(200).send();
@@ -24,7 +24,7 @@ const createCurrentUser = async (req: Request, res: Response) => {
     }
 
 };
-const updateCurrentUser = async(req:Request, res: Response) => {
+const updateCurrentUser = async(req: Request, res: Response) => {
     try {
         const { name, addressline1, country, city } = req.body;
         const user = await User.findById(req.userId);
@@ -46,7 +46,7 @@ const updateCurrentUser = async(req:Request, res: Response) => {
         res.status(500).json({message: "Error updating user"});    
     }
 }
-const getCurrentUser = async ( req: Request, res:Response) => {
+const getCurrentUser = async ( req: Request, res: Response) => {
     try {
         const currentUser = await User.findOne({ _id: req.userId });
         if (!currentUser) {
