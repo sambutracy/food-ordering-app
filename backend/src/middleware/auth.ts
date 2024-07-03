@@ -22,11 +22,11 @@ export const jwtCheck = auth({
 export const jwtParse = async (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
-  if(!authorization || ! authorization.startsWith("Bearer ")){
-    return res.sendStatus(401);
+  if(!authorization || !authorization.startsWith("Bearer ")){
+    return res.sendStatus(401).json({ message: "Unauthorized" });
   }
 
-  const token = authorization.split("")[1];
+  const token = authorization.split(" ")[1];
 
   try {
     const decoded = jwt.decode(token) as jwt.JwtPayload;
