@@ -100,8 +100,8 @@ export const useUpdateMyUser = () => {
       body: JSON.stringify(formData),
     });
 
-    if(!response.ok){
-      throw new Error("Failed to update user")
+    if(!response.ok) {
+      throw new Error("Failed to update user");
     }
 
     return response.json();
