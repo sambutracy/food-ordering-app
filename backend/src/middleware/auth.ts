@@ -29,8 +29,10 @@ export const jwtParse = async (
     return res.sendStatus(401);
   }
 
+
   const token = authorization.split(" ")[1];
   console.log("Received Token:", token);
+
 
   try {
     const decoded = jwt.decode(token) as jwt.JwtPayload;
