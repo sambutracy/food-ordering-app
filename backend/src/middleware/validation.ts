@@ -14,7 +14,7 @@ const handleValidationErrors = async (
   next();  
 };
 
-export const validateMyUsertRequest = [
+export const validateMyUserRequest = [
   body("name").isString().notEmpty().withMessage("Name must be a string"),
   body("addressLine1").isString().notEmpty().withMessage("address must be a string"),
   body("city").isString().notEmpty().withMessage("city must be a string"),
