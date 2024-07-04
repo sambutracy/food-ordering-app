@@ -12,7 +12,6 @@ declare global{
   }
 }
 
-
 export const jwtCheck = auth({
     audience: process.env.AUTH0_AUDIENCE,
     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
@@ -20,13 +19,13 @@ export const jwtCheck = auth({
   });
 
 export const jwtParse = async (req: Request, res: Response, next: NextFunction) => {
-  const { authorization } = req.headers;
+  const { Authorization } = req.headers;
 
-  if(!authorization || !authorization.startsWith("Bearer ")){
-    return res.sendStatus(401).json({ message: "Unauthorized" });
+  if(!Authorization || !Authorization.startsWith("Bearer ")){
+    return res.sendStatus(401);
   }
 
-  const token = authorization.split(" ")[1];
+  const token = Authorization.split(" ")[1];
 
   try {
     const decoded = jwt.decode(token) as jwt.JwtPayload;
@@ -46,4 +45,4 @@ export const jwtParse = async (req: Request, res: Response, next: NextFunction) 
     return res.sendStatus(401);
   }
   
-}
+};
