@@ -1,27 +1,51 @@
 import express from "express";
-import { param } from "express-validator";
-import RestaurantController from "../controllers/RestaurantController";
+import multer from "multer";
+import MyRestaurantController from "../controllers/MyRestaurantController";
+import { jwtCheck, jwtParse } from "../middleware/auth";
+import { validateMyRestaurantRequest } from "../middleware/validation";
 
 const router = express.Router();
 
-router.get(
-  "/:restaurantId",
-  param("restaurantId")
-    .isString()
-    .trim()
-    .notEmpty()
-    .withMessage("RestaurantId paramenter must be a valid string"),
-  RestaurantController.getRestaurant
-);
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, //5mb
+  },
+});
 
 router.get(
-  "/search/:city",
-  param("city")
-    .isString()
-    .trim()
-    .notEmpty()
-    .withMessage("City paramenter must be a valid string"),
-  RestaurantController.searchRestaurant
+  "/order",
+  jwtCheck,
+  jwtParse,
+  MyRestaurantController.getMyRestaurantOrders
+);
+
+router.patch(
+  "/order/:orderId/status",
+  jwtCheck,
+  jwtParse,
+  MyRestaurantController.updateOrderStatus
+);
+
+router.get("/", jwtCheck, jwtParse, MyRestaurantController.getMyRestaurant);
+
+router.post(
+  "/",
+  upload.single("imageFile"),
+  validateMyRestaurantRequest,
+  jwtCheck,
+  jwtParse,
+  MyRestaurantController.createMyRestaurant
+);
+
+router.put(
+  "/",
+  upload.single("imageFile"),
+  validateMyRestaurantRequest,
+  jwtCheck,
+  jwtParse,
+  MyRestaurantController.updateMyRestaurant
 );
 
 export default router;
