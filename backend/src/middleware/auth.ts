@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/user";
 
-declare global{
+declare global {
   namespace Express {
     interface Request {
       userId: string;
@@ -13,19 +13,24 @@ declare global{
 }
 
 export const jwtCheck = auth({
-    audience: process.env.AUTH0_AUDIENCE,
-    issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
-    tokenSigningAlg: 'RS256'
-  });
+  audience: process.env.AUTH0_AUDIENCE,
+  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
+  tokenSigningAlg: "RS256",
+});
 
-export const jwtParse = async (req: Request, res: Response, next: NextFunction) => {
-  const { Authorization } = req.headers;
+export const jwtParse = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { authorization } = req.headers;
 
-  if(!Authorization || !Authorization.startsWith("Bearer ")){
+  if (!authorization || !authorization.startsWith("Bearer ")) {
     return res.sendStatus(401);
   }
 
-  const token = Authorization.split(" ")[1];
+  // Bearer lshdflshdjkhvjkshdjkvh34h5k3h54jkh
+  const token = authorization.split(" ")[1];
 
   try {
     const decoded = jwt.decode(token) as jwt.JwtPayload;
@@ -33,16 +38,14 @@ export const jwtParse = async (req: Request, res: Response, next: NextFunction) 
 
     const user = await User.findOne({ auth0Id });
 
-    if(!user){
+    if (!user) {
       return res.sendStatus(401);
     }
 
     req.auth0Id = auth0Id as string;
     req.userId = user._id.toString();
     next();
-
   } catch (error) {
     return res.sendStatus(401);
   }
-  
 };
