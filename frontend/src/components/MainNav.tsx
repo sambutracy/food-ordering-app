@@ -6,7 +6,16 @@ import { Link } from "react-router-dom";
 const MainNav = () => {
   const { loginWithRedirect, isAuthenticated } = useAuth0();
   return(
-    <span className="flex space-x-2 items-center">
+    <span className="flex space-x-4 items-center">
+      <Link to="/HomePage" className="font-bold hover:text-purple-700">
+        Home
+      </Link>
+      <Link to="/AboutUs" className="font-bold hover:text-purple-700">
+        About
+      </Link>
+      <Link to="/contact" className="font-bold hover:text-purple-700">
+        Contact Us
+      </Link>
       {isAuthenticated ? (
         <>
         <Link to="/order-status" className="font-bold hover:text-purple-700">

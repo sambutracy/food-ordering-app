@@ -8,12 +8,23 @@ import ManageRestaurantPage from "./pages/ManageRestaurantPage";
 import SearchPage from "./pages/SearchPage";
 import DetailPage from "./pages/DetailPage";
 import OrderStatusPage from "./pages/OrderStatusPage";
+import LandingPage from "./pages/LandingPage";
+import AboutUsPage from "./pages/AboutUs";
+import ContactPage from "./pages/ContactPage";
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route
         path="/"
+        element={
+          <Layout showHero>
+            <LandingPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/Homepage"
         element={
           <Layout showHero>
             <HomePage />
@@ -51,6 +62,22 @@ const AppRoutes = () => {
           element={
             <Layout>
               <UserProfilePage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/AboutUs"
+          element={
+            <Layout>
+              <AboutUsPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <Layout>
+              <ContactPage />
             </Layout>
           }
         />
