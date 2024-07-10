@@ -6,7 +6,6 @@ import feature1Image from "../assets/feature1.png";
 import feature2Image from "../assets/feature2.png";
 import feature3Image from "../assets/feature3.png";
 
-
 const LandingPage: React.FC = () => {
   return (
     <div className="flex flex-col gap-12 p-8 bg-gray-100">
