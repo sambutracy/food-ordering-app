@@ -2,6 +2,8 @@
 
 ## Introduction
 
+![Landing page](frontend/src/assets/screenshotKeyFeatures.png)
+
 Welcome to speedyeats food ordering app! This project is a comprehensive solution for online food ordering, catering to both restaurant owners and customers. It provides a seamless and secure way for customers to order food online and for restaurant owners to manage their orders and menus efficiently.
 
 - **Deployed Site:** [speedyeats](https://food-ordering-app-frontend-rkad.onrender.com)
