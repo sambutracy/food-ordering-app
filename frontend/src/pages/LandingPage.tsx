@@ -5,7 +5,6 @@ import appDownloadImage from "../assets/appDownload.png";
 import feature1Image from "../assets/feature1.png";
 import feature2Image from "../assets/feature2.png";
 import feature3Image from "../assets/feature3.png";
-import Hero from "@/components/Hero";
 
 const LandingPage: React.FC = () => {
   return (
