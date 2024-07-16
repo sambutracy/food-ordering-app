@@ -9,9 +9,8 @@ export const useGetMyUser = () => {
   const { getAccessTokenSilently } = useAuth0();
 
   const getMyUserRequest = async (): Promise<User> => {
-
     const accessToken = await getAccessTokenSilently();
-    
+
     const response = await fetch(`${API_BASE_URL}/api/my/user`, {
       method: "GET",
       headers: {
@@ -47,7 +46,7 @@ type CreateUserRequest = {
 
 export const useCreateMyUser = () => {
   const { getAccessTokenSilently } = useAuth0();
-  
+
   const createMyUserRequest = async (user: CreateUserRequest) => {
     const accessToken = await getAccessTokenSilently();
     const response = await fetch(`${API_BASE_URL}/api/my/user`, {
@@ -58,27 +57,27 @@ export const useCreateMyUser = () => {
       },
       body: JSON.stringify(user),
     });
-  
+
     if (!response.ok) {
       throw new Error("Failed to create user");
     }
   };
-  
+
   const {
     mutateAsync: createUser,
     isLoading,
     isError,
     isSuccess,
   } = useMutation(createMyUserRequest);
-  
+
   return {
-   createUser,
-   isLoading,
-   isError,
-   isSuccess,
+    createUser,
+    isLoading,
+    isError,
+    isSuccess,
   };
 };
-  
+
 type UpdateMyUserRequest = {
   name: string;
   addressLine1: string;
@@ -89,8 +88,9 @@ type UpdateMyUserRequest = {
 export const useUpdateMyUser = () => {
   const { getAccessTokenSilently } = useAuth0();
 
-  const UpdateMyUserRequest = async (formData: UpdateMyUserRequest)=>{
+  const updateMyUserRequest = async (formData: UpdateMyUserRequest) => {
     const accessToken = await getAccessTokenSilently();
+
     const response = await fetch(`${API_BASE_URL}/api/my/user`, {
       method: "PUT",
       headers: {
@@ -100,20 +100,20 @@ export const useUpdateMyUser = () => {
       body: JSON.stringify(formData),
     });
 
-    if(!response.ok) {
+    if (!response.ok) {
       throw new Error("Failed to update user");
     }
 
     return response.json();
   };
 
-  const { 
+  const {
     mutateAsync: updateUser,
     isLoading,
     isSuccess,
-    error, 
+    error,
     reset,
-  } = useMutation(UpdateMyUserRequest);
+  } = useMutation(updateMyUserRequest);
 
   if (isSuccess) {
     toast.success("User profile updated!");
