@@ -17,7 +17,7 @@ const LandingPage: React.FC = () => {
         <span className="text-xl">
           Crave It. Click It. Get It – With Speedy Eats!
         </span>
-        <Link to="AuthCallbackPage" className="mt-4">
+        <Link to="/HomePage" className="mt-4">
           <button className="px-4 py-2 bg-purple-700 text-white rounded-lg font-bold hover:bg-purple-800">
             Try Speedy Eats Now!
           </button>
