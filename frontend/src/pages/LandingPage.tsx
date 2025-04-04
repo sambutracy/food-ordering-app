@@ -6,7 +6,6 @@ import appDownloadImage from "../assets/appDownload.png";
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [scrollY, setScrollY] = useState(0);
   const featureSectionRef = useRef<HTMLDivElement>(null);
   const imagesSectionRef = useRef<HTMLDivElement>(null);
   const [imagesVisible, setImagesVisible] = useState(false);
@@ -15,8 +14,6 @@ const LandingPage = () => {
   // Handle scroll effects
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY);
-      
       // Check if image section is in viewport
       if (imagesSectionRef.current) {
         const rect = imagesSectionRef.current.getBoundingClientRect();
