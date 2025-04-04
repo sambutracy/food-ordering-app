@@ -1,14 +1,17 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
 // Lazy load the Hero component
 const Hero = lazy(() => import("@/components/Hero"));
 
-// Loading placeholder that matches your site's style
+// Improved loading placeholder with animation
 const LoadingPlaceholder = () => (
-  <div className="h-[500px] w-full bg-gray-100 flex items-center justify-center">
-    <div className="text-purple-800 text-xl">Loading...</div>
+  <div className="loading-placeholder">
+    <div className="loading-content">
+      <div className="loading-spinner"></div>
+      <div>Loading...</div>
+    </div>
   </div>
 );
 
@@ -18,20 +21,31 @@ type Props = {
 };
 
 const Layout = ({ children, showHero = false }: Props) => {
-    return (
-        <div className="flex flex-col min-h-screen">
-            <Header />
-            
-            {showHero && (
-              <Suspense fallback={<LoadingPlaceholder />}>
-                <Hero />
-              </Suspense>
-            )}
-            
-            <div className="container mx-auto flex-1 py-10">{children}</div>
-            <Footer />
-        </div>
-    );
+  const [pageLoaded, setPageLoaded] = useState(false);
+
+  // Set page as loaded after a small delay to allow for smoother transitions
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPageLoaded(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className={`page-container ${pageLoaded ? 'loaded' : ''}`}>
+      <Header />
+      
+      {showHero && (
+        <Suspense fallback={<LoadingPlaceholder />}>
+          <Hero />
+        </Suspense>
+      )}
+      
+      <div className="container mx-auto flex-1 py-10 px-4 sm:px-6">{children}</div>
+      <Footer />
+    </div>
+  );
 };
 
 export default Layout;
