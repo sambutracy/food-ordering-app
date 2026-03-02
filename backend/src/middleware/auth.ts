@@ -1,5 +1,5 @@
 import { auth } from "express-oauth2-jwt-bearer";
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import User, { UserRole } from "../models/user";
 
 declare global {
@@ -18,11 +18,7 @@ export const jwtCheck = auth({
   tokenSigningAlg: "RS256",
 });
 
-export const jwtParse = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const jwtParse = (req: Request, res: Response, next: NextFunction) => {
   const auth0Id = (req as Request & { auth?: { payload?: { sub?: string } } }).auth
     ?.payload?.sub;
 

@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
 import User from "../models/user";
 
+const getAdminEmails = () =>
+  (process.env.ADMIN_EMAILS || "")
+    .split(",")
+    .map((entry) => entry.trim().toLowerCase())
+    .filter(Boolean);
+
 const getCurrentUser = async (req: Request, res: Response) => {
   try {
     const currentUser = await User.findOne({ _id: req.userId });
@@ -8,7 +14,7 @@ const getCurrentUser = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json(currentUser);
+    return res.json(currentUser);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong" });
@@ -29,26 +35,25 @@ const createCurrentUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Valid email is required" });
     }
 
-    const adminEmails = (process.env.ADMIN_EMAILS || "")
-      .split(",")
-      .map((entry) => entry.trim().toLowerCase())
-      .filter(Boolean);
+    const adminEmails = getAdminEmails();
+    const normalizedEmail = email.toLowerCase();
 
     const newUser = new User({
       auth0Id: req.auth0Id,
       email,
-      role: adminEmails.includes(email.toLowerCase()) ? "admin" : "user",
+      role: adminEmails.includes(normalizedEmail) ? "admin" : "user",
       name,
       addressLine1,
       city,
       country,
     });
+
     await newUser.save();
 
-    res.status(201).json(newUser.toObject());
+    return res.status(201).json(newUser.toObject());
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error creating user" });
+    return res.status(500).json({ message: "Error creating user" });
   }
 };
 
@@ -68,10 +73,10 @@ const updateCurrentUser = async (req: Request, res: Response) => {
 
     await user.save();
 
-    res.send(user);
+    return res.send(user);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error updating user" });
+    return res.status(500).json({ message: "Error updating user" });
   }
 };
 
