@@ -17,14 +17,26 @@ const getCurrentUser = async (req: Request, res: Response) => {
 
 const createCurrentUser = async (req: Request, res: Response) => {
   try {
-    const { auth0Id } = req.body;
-    const existingUser = await User.findOne({ auth0Id });
+    const existingUser = await User.findOne({ auth0Id: req.auth0Id });
 
     if (existingUser) {
       return res.status(200).send();
     }
 
-    const newUser = new User(req.body);
+    const { email, name, addressLine1, city, country } = req.body;
+
+    if (!email || typeof email !== "string") {
+      return res.status(400).json({ message: "Valid email is required" });
+    }
+
+    const newUser = new User({
+      auth0Id: req.auth0Id,
+      email,
+      name,
+      addressLine1,
+      city,
+      country,
+    });
     await newUser.save();
 
     res.status(201).json(newUser.toObject());

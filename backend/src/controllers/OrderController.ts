@@ -105,9 +105,9 @@ const createCheckoutSession = async (req: Request, res: Response) => {
 
     await newOrder.save();
     res.json({ url: session.url });
-  } catch (error: any) {
+  } catch (error) {
     console.log(error);
-    res.status(500).json({ message: error.raw.message });
+    res.status(500).json({ message: "Unable to create checkout session" });
   }
 };
 
