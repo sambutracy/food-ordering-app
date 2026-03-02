@@ -25,10 +25,6 @@ app.use(cors());
 app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
 app.use(express.json());
 
-app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
-
-app.use(express.json());
-
 app.get("/health", async (req: Request, res: Response) => {
   res.send({ message: "health OK!" });
 });
@@ -37,11 +33,6 @@ app.use("/api/my/user", myUserRoute);
 app.use("/api/my/restaurant", myRestaurantRoute);
 app.use("/api/restaurant", restaurantRoute);
 app.use("/api/order", orderRoute);
-
-app.get("/api/my/restaurant", (req: Request, res: Response) => {
-  res.send({ message: "health OK!" });
-});
-
 
 
 app.listen(7000, () => {

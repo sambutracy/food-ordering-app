@@ -1,6 +1,5 @@
 import { auth } from "express-oauth2-jwt-bearer";
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 import User from "../models/user";
 
 declare global {
@@ -18,36 +17,36 @@ export const jwtCheck = auth({
   tokenSigningAlg: "RS256",
 });
 
-export const jwtParse = async (
+export const jwtParse = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { authorization } = req.headers;
+  const auth0Id = (req as Request & { auth?: { payload?: { sub?: string } } }).auth
+    ?.payload?.sub;
 
-  if (!authorization || !authorization.startsWith("Bearer ")) {
+  if (!auth0Id) {
     return res.sendStatus(401);
   }
 
+  req.auth0Id = auth0Id;
+  return next();
+};
 
-  const token = authorization.split(" ")[1];
-  console.log("Received Token:", token);
-
-
+export const requireAppUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const decoded = jwt.decode(token) as jwt.JwtPayload;
-    console.log("Decoded Token:", decoded);
-    const auth0Id = decoded.sub;
-
-    const user = await User.findOne({ auth0Id });
+    const user = await User.findOne({ auth0Id: req.auth0Id });
 
     if (!user) {
       return res.sendStatus(401);
     }
 
-    req.auth0Id = auth0Id as string;
     req.userId = user._id.toString();
-    next();
+    return next();
   } catch (error) {
     return res.sendStatus(401);
   }
