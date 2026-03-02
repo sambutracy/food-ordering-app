@@ -7,6 +7,7 @@ declare global {
     interface Request {
       userId: string;
       auth0Id: string;
+      userRole: UserRole;
     }
   }
 }
