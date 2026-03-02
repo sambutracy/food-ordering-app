@@ -35,19 +35,14 @@ const createCurrentUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Valid email is required" });
     }
 
-    const adminEmails = getAdminEmails();
-    const normalizedEmail = email.toLowerCase();
-
     const newUser = new User({
       auth0Id: req.auth0Id,
       email,
-      role: adminEmails.includes(normalizedEmail) ? "admin" : "user",
       name,
       addressLine1,
       city,
       country,
     });
-
     await newUser.save();
 
     return res.status(201).json(newUser.toObject());
