@@ -13,14 +13,4 @@ router.get(
   AdminController.getAdminSummary
 );
 
-
-router.post(
-  "/seed-restaurants",
-  jwtCheck,
-  jwtParse,
-  requireAppUser,
-  requireRole("admin"),
-  AdminController.seedMockRestaurants
-);
-
 export default router;

@@ -1,5 +1,5 @@
 import { auth } from "express-oauth2-jwt-bearer";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import User from "../models/user";
 
 export type AppRole = "user" | "admin";
@@ -9,7 +9,7 @@ declare global {
     interface Request {
       userId: string;
       auth0Id: string;
-      userRole: AppRole;
+      userRole: UserRole;
     }
   }
 }
@@ -20,9 +20,13 @@ export const jwtCheck = auth({
   tokenSigningAlg: "RS256",
 });
 
-export const jwtParse = (req: Request, res: Response, next: NextFunction) => {
-  const auth0Id = (req as Request & { auth?: { payload?: { sub?: string } } })
-    .auth?.payload?.sub;
+export const jwtParse = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const auth0Id = (req as Request & { auth?: { payload?: { sub?: string } } }).auth
+    ?.payload?.sub;
 
   if (!auth0Id) {
     return res.sendStatus(401);
@@ -45,19 +49,8 @@ export const requireAppUser = async (
     }
 
     req.userId = user._id.toString();
-    req.userRole = user.role as AppRole;
     return next();
-  } catch {
+  } catch (error) {
     return res.sendStatus(401);
   }
-};
-
-export const requireRole = (...allowedRoles: AppRole[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (!allowedRoles.includes(req.userRole)) {
-      return res.sendStatus(403);
-    }
-
-    return next();
-  };
 };

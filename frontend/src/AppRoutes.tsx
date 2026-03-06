@@ -104,6 +104,17 @@ const AppRoutes = () => {
         />
       </Route>
 
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+        <Route
+          path="/admin"
+          element={
+            <Layout>
+              <AdminDashboardPage />
+            </Layout>
+          }
+        />
+      </Route>
+
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
