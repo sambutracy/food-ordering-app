@@ -25,7 +25,7 @@ app.use(cors());
 app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
 app.use(express.json());
 
-app.get("/health", async (_req: Request, res: Response) => {
+app.get("/health", async (req: Request, res: Response) => {
   res.send({ message: "health OK!" });
 });
 
@@ -33,7 +33,7 @@ app.use("/api/my/user", myUserRoute);
 app.use("/api/my/restaurant", myRestaurantRoute);
 app.use("/api/restaurant", restaurantRoute);
 app.use("/api/order", orderRoute);
-app.use("/api/admin", adminRoute);
+
 
 app.listen(7000, () => {
   console.log("server started on localhost:7000");

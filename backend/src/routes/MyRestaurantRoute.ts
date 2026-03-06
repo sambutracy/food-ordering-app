@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import MyRestaurantController from "../controllers/MyRestaurantController";
-import { jwtCheck, jwtParse, requireAppUser, requireRole } from "../middleware/auth";
+import { jwtCheck, jwtParse, requireAppUser } from "../middleware/auth";
 import { validateMyRestaurantRequest } from "../middleware/validation";
 
 const router = express.Router();
@@ -19,7 +19,6 @@ router.get(
   jwtCheck,
   jwtParse,
   requireAppUser,
-  requireRole("admin"),
   MyRestaurantController.getMyRestaurantOrders
 );
 
@@ -28,11 +27,10 @@ router.patch(
   jwtCheck,
   jwtParse,
   requireAppUser,
-  requireRole("admin"),
   MyRestaurantController.updateOrderStatus
 );
 
-router.get("/", jwtCheck, jwtParse, requireAppUser, requireRole("admin"), MyRestaurantController.getMyRestaurant);
+router.get("/", jwtCheck, jwtParse, requireAppUser, MyRestaurantController.getMyRestaurant);
 
 router.post(
   "/",
@@ -41,7 +39,6 @@ router.post(
   jwtCheck,
   jwtParse,
   requireAppUser,
-  requireRole("admin"),
   MyRestaurantController.createMyRestaurant
 );
 
@@ -52,7 +49,6 @@ router.put(
   jwtCheck,
   jwtParse,
   requireAppUser,
-  requireRole("admin"),
   MyRestaurantController.updateMyRestaurant
 );
 
