@@ -11,6 +11,7 @@ import OrderStatusPage from "./pages/OrderStatusPage";
 import LandingPage from "./pages/LandingPage";
 import AboutUsPage from "./pages/AboutUs";
 import ContactPage from "./pages/ContactPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 const AppRoutes = () => {
   return (
@@ -48,6 +49,7 @@ const AppRoutes = () => {
           </Layout>
         }
       />
+
       <Route element={<ProtectedRoute />}>
         <Route
           path="/order-status"
@@ -78,6 +80,17 @@ const AppRoutes = () => {
           element={
             <Layout>
               <ContactPage />
+            </Layout>
+          }
+        />
+      </Route>
+
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+        <Route
+          path="/admin"
+          element={
+            <Layout>
+              <AdminDashboardPage />
             </Layout>
           }
         />
