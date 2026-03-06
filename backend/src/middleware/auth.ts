@@ -1,13 +1,15 @@
 import { auth } from "express-oauth2-jwt-bearer";
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import { NextFunction, Request, Response } from "express";
 import User from "../models/user";
+
+export type AppRole = "user" | "admin";
 
 declare global {
   namespace Express {
     interface Request {
       userId: string;
       auth0Id: string;
+      userRole: AppRole;
     }
   }
 }
@@ -18,37 +20,44 @@ export const jwtCheck = auth({
   tokenSigningAlg: "RS256",
 });
 
-export const jwtParse = async (
+export const jwtParse = (req: Request, res: Response, next: NextFunction) => {
+  const auth0Id = (req as Request & { auth?: { payload?: { sub?: string } } })
+    .auth?.payload?.sub;
+
+  if (!auth0Id) {
+    return res.sendStatus(401);
+  }
+
+  req.auth0Id = auth0Id;
+  return next();
+};
+
+export const requireAppUser = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { authorization } = req.headers;
-
-  if (!authorization || !authorization.startsWith("Bearer ")) {
-    return res.sendStatus(401);
-  }
-
-
-  const token = authorization.split(" ")[1];
-  console.log("Received Token:", token);
-
-
   try {
-    const decoded = jwt.decode(token) as jwt.JwtPayload;
-    console.log("Decoded Token:", decoded);
-    const auth0Id = decoded.sub;
-
-    const user = await User.findOne({ auth0Id });
+    const user = await User.findOne({ auth0Id: req.auth0Id });
 
     if (!user) {
       return res.sendStatus(401);
     }
 
-    req.auth0Id = auth0Id as string;
     req.userId = user._id.toString();
-    next();
-  } catch (error) {
+    req.userRole = user.role as AppRole;
+    return next();
+  } catch {
     return res.sendStatus(401);
   }
+};
+
+export const requireRole = (...allowedRoles: AppRole[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!allowedRoles.includes(req.userRole)) {
+      return res.sendStatus(403);
+    }
+
+    return next();
+  };
 };

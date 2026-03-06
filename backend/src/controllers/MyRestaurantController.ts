@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import Restaurant from "../models/restaurant";
 import cloudinary from "cloudinary";
 import mongoose from "mongoose";
 import Order from "../models/order";
+import Restaurant from "../models/restaurant";
 
 const getMyRestaurant = async (req: Request, res: Response) => {
   try {
@@ -10,10 +10,10 @@ const getMyRestaurant = async (req: Request, res: Response) => {
     if (!restaurant) {
       return res.status(404).json({ message: "restaurant not found" });
     }
-    res.json(restaurant);
+    return res.json(restaurant);
   } catch (error) {
     console.log("error", error);
-    res.status(500).json({ message: "Error fetching restaurant" });
+    return res.status(500).json({ message: "Error fetching restaurant" });
   }
 };
 
@@ -27,7 +27,11 @@ const createMyRestaurant = async (req: Request, res: Response) => {
         .json({ message: "User restaurant already exists" });
     }
 
-    const imageUrl = await uploadImage(req.file as Express.Multer.File);
+    if (!req.file) {
+      return res.status(400).json({ message: "Restaurant image is required" });
+    }
+
+    const imageUrl = await uploadImage(req.file);
 
     const restaurant = new Restaurant(req.body);
     restaurant.imageUrl = imageUrl;
@@ -35,18 +39,16 @@ const createMyRestaurant = async (req: Request, res: Response) => {
     restaurant.lastUpdated = new Date();
     await restaurant.save();
 
-    res.status(201).send(restaurant);
+    return res.status(201).send(restaurant);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
 const updateMyRestaurant = async (req: Request, res: Response) => {
   try {
-    const restaurant = await Restaurant.findOne({
-      user: req.userId,
-    });
+    const restaurant = await Restaurant.findOne({ user: req.userId });
 
     if (!restaurant) {
       return res.status(404).json({ message: "restaurant not found" });
@@ -62,15 +64,14 @@ const updateMyRestaurant = async (req: Request, res: Response) => {
     restaurant.lastUpdated = new Date();
 
     if (req.file) {
-      const imageUrl = await uploadImage(req.file as Express.Multer.File);
-      restaurant.imageUrl = imageUrl;
+      restaurant.imageUrl = await uploadImage(req.file);
     }
 
     await restaurant.save();
-    res.status(200).send(restaurant);
+    return res.status(200).send(restaurant);
   } catch (error) {
     console.log("error", error);
-    res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -85,10 +86,10 @@ const getMyRestaurantOrders = async (req: Request, res: Response) => {
       .populate("restaurant")
       .populate("user");
 
-    res.json(orders);
+    return res.json(orders);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "something went wrong" });
+    return res.status(500).json({ message: "something went wrong" });
   }
 };
 
@@ -111,20 +112,32 @@ const updateOrderStatus = async (req: Request, res: Response) => {
     order.status = status;
     await order.save();
 
-    res.status(200).json(order);
+    return res.status(200).json(order);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "unable to update order status" });
+    return res.status(500).json({ message: "unable to update order status" });
   }
 };
 
-const uploadImage = async (file: Express.Multer.File) => {
-  const image = file;
-  const base64Image = Buffer.from(image.buffer).toString("base64");
-  const dataURI = `data:${image.mimetype};base64,${base64Image}`;
+const uploadImage = async (file: Express.Multer.File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.v2.uploader.upload_stream(
+      {
+        resource_type: "image",
+        transformation: [{ fetch_format: "auto", quality: "auto" }],
+      },
+      (error, result) => {
+        if (error || !result) {
+          reject(error ?? new Error("Image upload failed"));
+          return;
+        }
 
-  const uploadResponse = await cloudinary.v2.uploader.upload(dataURI);
-  return uploadResponse.url;
+        resolve(result.secure_url);
+      }
+    );
+
+    uploadStream.end(file.buffer);
+  });
 };
 
 export default {
