@@ -83,6 +83,17 @@ const AppRoutes = () => {
             </Layout>
           }
         />
+      </Route>
+
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+        <Route
+          path="/admin"
+          element={
+            <Layout>
+              <AdminDashboardPage />
+            </Layout>
+          }
+        />
         <Route
           path="/manage-restaurant"
           element={
