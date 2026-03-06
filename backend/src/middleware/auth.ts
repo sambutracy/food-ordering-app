@@ -2,6 +2,8 @@ import { auth } from "express-oauth2-jwt-bearer";
 import { Request, Response, NextFunction } from "express";
 import User from "../models/user";
 
+export type AppRole = "user" | "admin";
+
 declare global {
   namespace Express {
     interface Request {
